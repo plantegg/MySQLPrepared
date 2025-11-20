@@ -210,6 +210,26 @@ Com_stmt_prepare: 1
    - 频繁的大块内存分配和释放
    - 进一步降低性能
 
+
+```
+Thread 1 (Thread 0x7feeb8043640 (LWP 2508284)):
+#0  0x00007ff302bb5515 in __memmove_avx512_unaligned_erms () from /lib64/libc.so.6
+#1  0x0000000000efffe6 in my_realloc (key=<optimized out>, ptr=0x7fee5e907380, size=7192160, flags=<optimized out>) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/mysys/my_malloc.c:112
+#2  0x0000000000d9a921 in String::mem_realloc (this=0x7feeb80424b0, alloc_length=7192155, force_on_heap=force_on_heap@entry=false) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql-common/sql_string.cc:128
+#3  0x0000000000d9b9d4 in String::replace (this=this@entry=0x7feeb80424b0, offset=7119079, arg_length=arg_length@entry=1, to=0x7fee5c3f5810 "286381588518215", to_length=15) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql-common/sql_string.cc:804
+#4  0x0000000000d9ba81 in String::replace (this=this@entry=0x7feeb80424b0, offset=<optimized out>, arg_length=arg_length@entry=1, to=...) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql-common/sql_string.cc:783
+#5  0x0000000000d026e2 in Prepared_statement::insert_params (this=this@entry=0x7fee5c171fe0, null_array=null_array@entry=0x7fee5c45240a "", read_pos=0x7fee5c4ccc05 "\336\274y\206", <incomplete sequence \303>, read_pos@entry=0x7fee5c46c315 "\016r\342\320\355\242\002", data_end=0x7fee5c4cdd95 "", query=query@entry=0x7feeb80424b0) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql/sql_prepare.cc:924
+#6  0x0000000000d03db6 in Prepared_statement::set_parameters (this=this@entry=0x7fee5c171fe0, expanded_query=expanded_query@entry=0x7feeb80424b0, packet=0x7fee5c46c315 "\016r\342\320\355\242\002", packet_end=<optimized out>) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql/sql_prepare.cc:3496
+#7  0x0000000000d0772f in Prepared_statement::execute_loop (this=0x7fee5c171fe0, expanded_query=0x7feeb80424b0, open_cursor=<optimized out>, packet=<optimized out>, packet_end=<optimized out>) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql/sql_prepare.cc:3559
+#8  0x0000000000d07aa4 in mysqld_stmt_execute (thd=thd@entry=0x7fee5c000b60, stmt_id=<optimized out>, flags=0, params=0x7fee5c45240a "", params_length=506251) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql/sql_prepare.cc:2582
+#9  0x0000000000cdf6f5 in dispatch_command (thd=thd@entry=0x7fee5c000b60, com_data=com_data@entry=0x7feeb8042d40, command=COM_STMT_EXECUTE) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql/sql_parse.cc:1428
+#10 0x0000000000ce00c7 in do_command (thd=thd@entry=0x7fee5c000b60) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql/sql_parse.cc:1032
+#11 0x0000000000d9cc08 in handle_connection (arg=arg@entry=0x1eb0a010) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/sql/conn_handler/connection_handler_per_thread.cc:313
+#12 0x00000000013fc4a4 in pfs_spawn_thread (arg=0x1ea71270) at /export/home/pb2/build/sb_0-37309218-1576676711.18/mysql-5.7.29/storage/perfschema/pfs.cc:2197
+#13 0x00007ff30305b3fb in start_thread () from /lib64/libpthread.so.0
+#14 0x00007ff302b0de83 in clone () from /lib64/libc.so.6
+```
+
 ### 监控数据
 
 ```
